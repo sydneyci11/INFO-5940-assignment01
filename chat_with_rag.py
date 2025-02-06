@@ -25,6 +25,7 @@ if prompt := st.chat_input():
     response = client.chat.completions.create(model="gpt-4o-mini", 
                                               messages=[
             {
+                # use AI to see which data to use without actually loading the data #
                 "role": "system",
                 "content": """Your job is to guess which knowledge base I need to load based on the user 
                 prompt. The available knowledge bases are:
@@ -37,9 +38,10 @@ if prompt := st.chat_input():
                 "content": prompt
             }
         ])
+    # in order to answer the question, AI is telling which data to use #
     print(response.choices[0].message.content)
     # load the file based on the response
-    if response.choices[0].message.content in ["harvard.txt", "cornell.txt", "duke.txt"]:
+    if response.choices[0].message.content in ["harvard.txt", "cornell.txt", "duke.txt"]: # file name is for developer not user #
         knowledge_base_file_path = "/workspace/data/knowledge_base"
         with open(f"{knowledge_base_file_path}/{response.choices[0].message.content}", "r") as file:
             content = file.read()

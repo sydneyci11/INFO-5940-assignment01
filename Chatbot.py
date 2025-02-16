@@ -1,7 +1,5 @@
 import streamlit as st
-from openai import AzureOpenAI
 from openai import OpenAI
-from os import environ
 
 st.title("Awesome Chatbot")
 st.caption("Powered by INFO-5940")
@@ -10,7 +8,8 @@ if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "Hello! How can I help you today?"}]
 
 for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    st.chat_message(msg['role']).write(msg['content'])
+
 
 if prompt := st.chat_input():
 

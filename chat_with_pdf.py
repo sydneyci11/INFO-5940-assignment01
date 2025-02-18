@@ -29,7 +29,7 @@ if question and uploaded_file:
 
     with st.chat_message("assistant"):
         stream = client.chat.completions.create(
-            model="gpt-4o",  # Change this to a valid model name
+            model="openai.gpt-4o",  # Change this to a valid model name
             messages=[
                 {"role": "system", "content": f"Here's the content of the file:\n\n{file_content}"},
                 *st.session_state.messages

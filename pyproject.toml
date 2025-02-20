@@ -24,8 +24,8 @@ langchain = "^0.2.15"
 langchain_core = "^0.2.15"
 langchain-openai = "^0.1.23"
 pydub = "^0.25.1"
-#added
 pypdf = "^5.3.0"
+scipy = "^1.14.1"
 
 [tool.poetry.group.dev.dependencies]
 cfn_flip = "*"

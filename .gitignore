@@ -81,6 +81,9 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+test.ipynb  # Ignore local testing notebook
+
+
 # IPython
 profile_default/
 ipython_config.py

@@ -1,3 +1,11 @@
+# INFO 5940-005 Assignment 1
+# Author: Sydney Chien
+# This project was developed as part of INFO 5940-005 course
+# Instructor: Ayham Boucher
+# References: https://github.com/AyhamB/INFO-5940.git (Branch: lecture-05, lecture-06)
+# This script allows users to upload .txt, .pdf, and .md files and ask questions about their content.
+# The chatbot utilizes OpenAI's API and LangChain for document processing and response generation.
+
 import streamlit as st
 from openai import OpenAI
 from os import environ
@@ -8,23 +16,30 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from scipy.spatial.distance import cosine
 import tempfile
 
+# Set up Streamlit app title
 st.title("📝 File Q&A with OpenAI")
+
+# Allow users to upload multiple documents (.txt, .pdf, .md)
 uploaded_files = st.file_uploader("Upload your documents", 
 type=("txt","pdf", "md"),
 accept_multiple_files = True # Allow for multiple file selection 
 )
 
+# User input field for questions
 question = st.chat_input(
     "Ask something about the uploaded documents",
     disabled=not uploaded_files,
 )
 
+# Initialize chat session history
 if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "Ask something about the uploaded documents"}]
 
+# Display previous messages in chat
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
+# Function to extract text from uploaded documents
 def extract_text(uploaded_file):
     file_extension = uploaded_file.name.split(".")[-1].lower()
     
@@ -45,7 +60,8 @@ def extract_text(uploaded_file):
     else:
         st.error(f"Unsupported document type: {uploaded_file.name}")
         return None
-    
+
+# Only run if there's a question and uploaded files    
 if question and uploaded_files:
     
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
@@ -87,6 +103,7 @@ if question and uploaded_files:
     # Select **top 5 chunks** to provide more context (more context, better response)
     top_chunks = ranked_chunks[:5]
 
+    # Prepare relevant context for OpenAI response
     if top_chunks:
         context_message = "The most relevant context from uploaded files:\n\n"
         for chunk in top_chunks:
@@ -104,7 +121,7 @@ if question and uploaded_files:
 
     with st.chat_message("assistant"):
         stream = client.chat.completions.create(
-            model="openai.gpt-4o",  # Change this to a valid model name
+            model="openai.gpt-4o",  
             messages=[
                 {"role": "system", "content": f"Here's the content of the file:\n\n{context_message}"},
                 *st.session_state.messages

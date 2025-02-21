@@ -1,5 +1,7 @@
 # 📌 INFO-5940 Assignment 1
 
+### Note: This project is provided as a ZIP file. Before running, please extract the contents and follow the instructions below as if cloning from a GitHub repository.
+
 This repository contains a document-based Q&A chatbot developed as part of the **INFO 5940-005** course instructed by **Ayham Boucher**. The chatbot allows users to upload .txt and .pdf documents and interactively ask questions based on the uploaded content. The application uses OpenAI's API for generating contextually accurate responses and leverages LangChain for document processing and retrieval.
 
 The project runs within a Docker environment for consistent and isolated development, with complete setup instructions provided for VS Code and containerized deployment.

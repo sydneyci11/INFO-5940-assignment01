@@ -22,6 +22,8 @@ This work references code and materials from the official course repository:
 
 ✅ Provides contextually accurate responses using OpenAI's embeddings and GPT model.
 
+✅ Handling errors such as unsupported file types and empty document uploads.
+
 ## 🛠️ Prerequisites
 
 Before starting, ensure you have the following installed on your system:

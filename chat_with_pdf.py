@@ -43,28 +43,38 @@ for msg in st.session_state.messages:
 def extract_text(uploaded_file):
     file_extension = uploaded_file.name.split(".")[-1].lower()
     
-    if file_extension in ["txt", "md"]:
-        file_content = uploaded_file.read().decode("utf-8")
-        return file_content
+    try:
+        if file_extension in ["txt", "md"]:
+            file_content = uploaded_file.read().decode("utf-8")
+            if not file_content.strip():
+                st.error(f"❌ The file '{uploaded_file.name}' is empty.")
+                return None
+            return file_content
 
-    elif file_extension == "pdf":
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-            tmp_file.write(uploaded_file.getbuffer())
-            tmp_file_path = tmp_file.name
-        loader = PyPDFLoader(tmp_file_path)
-        docs = loader.load()
-        text = "\n".join(doc.page_content for doc in docs)
-        file_content = text
-        
-        return file_content
-    else:
-        st.error(f"Unsupported document type: {uploaded_file.name}")
+        elif file_extension == "pdf":
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+                tmp_file.write(uploaded_file.getbuffer())
+                tmp_file_path = tmp_file.name
+            loader = PyPDFLoader(tmp_file_path)
+            docs = loader.load()
+            text = "\n".join(doc.page_content for doc in docs)
+            if not text.strip():
+                st.error(f"❌ The PDF '{uploaded_file.name}' is empty or contains no readable text.")
+                return None
+            return text
+
+        else:
+            st.error(f"❌ Unsupported file type: '{uploaded_file.name}'. Please upload a .txt, .pdf, or .md file.")
+            return None
+
+    except Exception as e:
+        st.error(f"❗ Error processing '{uploaded_file.name}': {str(e)}")
         return None
 
 # Only run if there's a question and uploaded files    
 if question and uploaded_files:
     
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     
     # Process each file separately and store chunks with file metadata.
     chunks = []
@@ -100,8 +110,8 @@ if question and uploaded_files:
     # Sort chunks by similarity (highest first)
     ranked_chunks.sort(key=lambda x: x["similarity"], reverse=True)
 
-    # Select **top 5 chunks** to provide more context (more context, better response)
-    top_chunks = ranked_chunks[:5]
+    # Select **top 10 chunks** to provide more context (more context, better response)
+    top_chunks = ranked_chunks[:10]
 
     # Prepare relevant context for OpenAI response
     if top_chunks:
@@ -114,6 +124,13 @@ if question and uploaded_files:
 
     client = OpenAI(api_key=environ['OPENAI_API_KEY'])
 
+    # Improved system prompt
+    system_message = (
+        "You are an intelligent assistant helping users analyze and answer questions "
+        "based on the uploaded documents. Use the most relevant sections provided to generate "
+        "detailed and accurate responses. If the information is insufficient, mention that clearly."
+    )
+
     # Append the user's question to the messages
     st.session_state.messages.append({"role": "user", "content": question})
 
@@ -123,7 +140,7 @@ if question and uploaded_files:
         stream = client.chat.completions.create(
             model="openai.gpt-4o",  
             messages=[
-                {"role": "system", "content": f"Here's the content of the file:\n\n{context_message}"},
+                {"role": "system", "content": f"{system_message}\n\n{context_message}"},
                 *st.session_state.messages
             ],
             stream=True

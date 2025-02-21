@@ -1,12 +1,12 @@
 # 📌 INFO-5940 Assignment 1
 
-This repository contains a document-based Q&A chatbot developed as part of the INFO 5940-005 course instructed by Ayham Boucher. The chatbot allows users to upload .txt and .pdf documents and interactively ask questions based on the uploaded content. The application uses OpenAI's API for generating contextually accurate responses and leverages LangChain for document processing and retrieval.
+This repository contains a document-based Q&A chatbot developed as part of the **INFO 5940-005** course instructed by **Ayham Boucher**. The chatbot allows users to upload .txt and .pdf documents and interactively ask questions based on the uploaded content. The application uses OpenAI's API for generating contextually accurate responses and leverages LangChain for document processing and retrieval.
 
 The project runs within a Docker environment for consistent and isolated development, with complete setup instructions provided for VS Code and containerized deployment.
 
 This work references code and materials from the official course repository:
 
-[INFO 5940 Course Repository] (https://github.com/AyhamB/INFO-5940.git) (Branches: lecture-05, lecture-06)
+[INFO 5940 Course Repository](https://github.com/AyhamB/INFO-5940.git) (Branches: lecture-05, lecture-06)
 
 ## 💡 Features
 
@@ -48,7 +48,7 @@ cd INFO-5940-assignment01
 
 ### 2️⃣ Open in VS Code with Docker  
 
-1. Open **VS Code**, navigate to the `INFO-5940` folder.  
+1. Open **VS Code**, navigate to the `INFO-5940-assignment01` folder.  
 2. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac) and search for:  
    ```
    Remote-Containers: Reopen in Container
